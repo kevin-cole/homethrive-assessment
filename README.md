@@ -18,6 +18,7 @@ A POC medication management system built with SST (Serverless Stack) that allows
 ## Known Issues
 
 - **Mobile Only** - Medication add screen date picker does not work as expected.
+- When your toke expires and you login again, initial redirect breaks and manual refresh is required
 
 ## 🏗️ Technical Architecture
 
