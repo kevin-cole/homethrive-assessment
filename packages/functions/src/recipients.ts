@@ -1,6 +1,6 @@
 import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
 import { createDatabaseManager } from './utils/database'
-import { NotFound, MethodNotAllowed } from './utils/responses'
+import { NotFound, MethodNotAllowed, Ok, BadRequest, Created, InternalServerError } from './utils/responses'
 import { withAuth } from './utils/auth'
 
 export const handler: APIGatewayProxyHandlerV2 = withAuth(async (event, payload) => {
@@ -21,20 +21,12 @@ export const handler: APIGatewayProxyHandlerV2 = withAuth(async (event, payload)
             return NotFound('Recipient not found')
           }
 
-          return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(recipient),
-          }
+          return Ok(recipient)
         } else {
           // Get all recipients
           const recipients = await db.getAllCareRecipients()
 
-          return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(recipients),
-          }
+          return Ok(recipients)
         }
 
       case 'POST':
@@ -43,11 +35,7 @@ export const handler: APIGatewayProxyHandlerV2 = withAuth(async (event, payload)
         const { name } = recipientData
 
         if (!name) {
-          return {
-            statusCode: 400,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ error: 'Name is required' }),
-          }
+          return BadRequest('Name is required')
         }
 
         const recipient = await db.createCareRecipient({ name })
@@ -55,11 +43,7 @@ export const handler: APIGatewayProxyHandlerV2 = withAuth(async (event, payload)
         // Save database to S3
         await db.syncToS3()
 
-        return {
-          statusCode: 201,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(recipient),
-        }
+        return Created(recipient)
 
       default:
         return MethodNotAllowed()
@@ -67,14 +51,7 @@ export const handler: APIGatewayProxyHandlerV2 = withAuth(async (event, payload)
   } catch (error) {
     console.error('Error:', error)
     await new Promise((res) => setTimeout(res, 1000)) // Allow logs to flush
-    return {
-      statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      }),
-    }
+    return InternalServerError(error instanceof Error ? error.message : 'Unknown error')
   } finally {
     if (db) await db.close()
   }
