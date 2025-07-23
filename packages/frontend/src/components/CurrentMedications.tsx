@@ -54,15 +54,15 @@ const CurrentMedications = () => {
   }
 
   return (
-    <div className="card">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">
+    <div className="card p-2 md:p-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-2 md:gap-0">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2 md:mb-0">
           Current Medications
         </h2>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-3 w-full md:w-auto">
           <button
             onClick={() => setShowInactive(!showInactive)}
-            className={`px-3 py-1 text-sm rounded flex items-center gap-2 ${
+            className={`w-full md:w-auto px-3 py-2 text-sm rounded flex items-center justify-center gap-2 ${
               showInactive
                 ? 'bg-gray-600 text-white hover:bg-gray-700'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -73,7 +73,7 @@ const CurrentMedications = () => {
           </button>
           <button
             onClick={() => navigate('/medications/add')}
-            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+            className="w-full md:w-auto px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
           >
             Add Medication
           </button>
@@ -92,18 +92,18 @@ const CurrentMedications = () => {
           </button>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {medications.map((medication) => (
             <div
               key={medication.id}
               onClick={() => handleMedicationClick(medication.id!)}
-              className={`border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer ${
+              className={`border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer w-full ${
                 medication.inactive_at ? 'bg-gray-50 opacity-75' : 'bg-white'
               }`}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-medium text-gray-900 truncate">
+                  <h3 className="font-medium text-gray-900 truncate text-base md:text-lg">
                     {medication.name}
                   </h3>
                   {medication.inactive_at && (

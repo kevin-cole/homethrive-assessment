@@ -88,49 +88,51 @@ const UpcomingDoses = () => {
       {!doses || doses.length === 0 ? (
         <div>No doses scheduled.</div>
       ) : (
-        <table className="min-w-full border mb-8">
-          <thead>
-            <tr>
-              <th className="border px-2 py-1">Status</th>
-              <th className="border px-2 py-1">Day</th>
-              <th className="border px-2 py-1">Time</th>
-              <th className="border px-2 py-1">Medication</th>
-              <th className="border px-2 py-1">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {doses.map((dose: any) => (
-              <tr key={dose.id}>
-                <td className="border px-2 py-1">
-                  <div className="flex items-center gap-2">
-                    {getStatusIcon(dose)}
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(dose)}`}>
-                      {getStatusText(dose)}
-                    </span>
-                  </div>
-                </td>
-                <td className="border px-2 py-1">{dose.weekday}</td>
-                <td className="border px-2 py-1">{
-                  dose.time
-                    ? new Date(`1970-01-01T${dose.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
-                    : new Date(dose.scheduled_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
-                }</td>
-                <td className="border px-2 py-1">{dose.medication_name}</td>
-                <td className="border px-2 py-1">
-                  {!dose.taken_at && (
-                    <button
-                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 disabled:opacity-50"
-                      onClick={() => markAsTaken.mutate(dose.id)}
-                      disabled={markAsTaken.isLoading}
-                    >
-                      Mark as Taken
-                    </button>
-                  )}
-                </td>
+        <div className="w-full overflow-x-auto">
+          <table className="min-w-full border mb-8 text-xs md:text-sm">
+            <thead>
+              <tr>
+                <th className="border px-2 py-1">Status</th>
+                <th className="border px-2 py-1">Day</th>
+                <th className="border px-2 py-1">Time</th>
+                <th className="border px-2 py-1">Medication</th>
+                <th className="border px-2 py-1">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {doses.map((dose: any) => (
+                <tr key={dose.id}>
+                  <td className="border px-2 py-1">
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(dose)}
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(dose)}`}>
+                        {getStatusText(dose)}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="border px-2 py-1">{dose.weekday}</td>
+                  <td className="border px-2 py-1">{
+                    dose.time
+                      ? new Date(`1970-01-01T${dose.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
+                      : new Date(dose.scheduled_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
+                  }</td>
+                  <td className="border px-2 py-1">{dose.medication_name}</td>
+                  <td className="border px-2 py-1">
+                    {!dose.taken_at && (
+                      <button
+                        className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 disabled:opacity-50 w-full md:w-auto"
+                        onClick={() => markAsTaken.mutate(dose.id)}
+                        disabled={markAsTaken.isLoading}
+                      >
+                        Mark as Taken
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )

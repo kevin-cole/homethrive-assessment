@@ -78,9 +78,9 @@ const MedicationDetail = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-2 md:p-0">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-0">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
@@ -93,17 +93,17 @@ const MedicationDetail = () => {
             <p className="text-gray-600">Medication Details</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
           <button
             onClick={() => refetch()}
-            className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center gap-2"
+            className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center gap-2 w-full md:w-auto"
           >
             <RefreshCw className="h-4 w-4" />
             Reload
           </button>
           <button
             onClick={markInactive}
-            className="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2"
+            className="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2 w-full md:w-auto"
           >
             <Trash2 className="h-4 w-4" />
             Archive
@@ -114,7 +114,7 @@ const MedicationDetail = () => {
       {/* Medication Details */}
       <div className="card">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Medication Information</h2>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
           {/* Basic Information */}
           <div className="space-y-4">
             <div>
@@ -154,11 +154,11 @@ const MedicationDetail = () => {
       {medicationSchedule && medicationSchedule.length > 0 && (
         <div className="card">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Weekly Overview</h2>
-          <div className="grid gap-4 md:grid-cols-7">
+          <div className="grid gap-4 grid-cols-2 sm:grid-cols-4 md:grid-cols-7 overflow-x-auto">
             {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => {
               const daySchedule = medicationSchedule.filter((s: any) => s.weekday === day)
               return (
-                <div key={day} className="text-center">
+                <div key={day} className="text-center min-w-[120px]">
                   <h3 className="font-medium text-gray-900 mb-2">{day}</h3>
                   {daySchedule.length > 0 ? (
                     <div className="space-y-1">

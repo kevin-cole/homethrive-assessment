@@ -5,18 +5,19 @@ A POC medication management system built with SST (Serverless Stack) that allows
 ## Ruminations on project
 
 - I decided to go with a more layman’s ui for medication dosing vs a medical professional ui, as my assumption is these will be entered after a script has been written, by the care giver who has read the more medical dosing and made it work for their loved one.
+- I am skeptical of testing db functions, as my experience is you end up mocking everything to work. Adding an ORM that can type the db would be helpful. I did include on Jest test file for datetime.ts.
+- I did not get around to implementing any examples, but it seems like a good place to test api calls.
 - The concept of a "daily" schedule is just UI sugar, as all schedules are normalized to weekly schedules in the backend. The schedule type is saved in the on the medication record in case of future editing.
 - Ad-hoc scheduling should be implemented for non-chronic medications that do not recur and dosing is finite (like antibiotics.) In these cases medication_times are not necessary and all dosing can be created immediately.
+- Did a quick update to add a more mobile friendly view for most pages
+- Spent more than a good while trying to implement with SST V3. I was unable to do it in the time allotted, so fell back to V2. V3 feels half-baked. I spoke with my colleague at Buildforce, and they are thinking of moving off SST altogether due to the lack of a good upgrade path
+- Spent way too much time debugging different versions of file based mysql. Neither better-mysql or SQLLite works for SST (at least local development.) Settled on sql.js, though I did have to jump through hoops loading the sql-wasm.wasm file. I am not positive this code `this.SQL = await initSqlJs({
+  locateFile: file => path.resolve(process.cwd(), 'sql-wasm.wasm'),
+})` will work other than local dev, but this is not a production worthy infra.
 
-## 🎯 Business Requirements Met
+## Known Issues
 
-✅ **Add medications for care recipients** - Full CRUD operations for medications
-✅ **Define medication schedules** - Support for daily and weekly recurrence patterns
-✅ **View upcoming medication doses** - Dashboard with upcoming and overdue doses
-✅ **Mark medications as taken** - Simple UI for tracking dose administration
-✅ **Medications must have at least one scheduled dose** - Enforced during creation
-✅ **Medications cannot be removed, only marked inactive** - Soft delete implementation
-✅ **Support daily and weekly recurrence** - Flexible scheduling system
+- **Mobile Only** - Medication add screen date picker does not work as expected.
 
 ## 🏗️ Technical Architecture
 
@@ -29,6 +30,17 @@ A POC medication management system built with SST (Serverless Stack) that allows
 - **SQL.js**: File-based database
 - **TypeScript**: Type-safe development
 
+#### Third-Party Libraries (Backend)
+
+- `sst` (Serverless Stack)
+- `@aws-sdk/*` (AWS SDK v3)
+- `sql.js` (SQLite in-memory database)
+- `date-fns` and `date-fns-tz` (date/time utilities)
+- `jsonwebtoken` (JWT handling)
+- `zod` (schema validation, if used)
+- `uuid` (unique IDs)
+- `jest`, `ts-jest`, `@types/jest` (testing)
+
 ### Frontend (React)
 
 - **React 18**: Modern React with hooks
@@ -37,6 +49,18 @@ A POC medication management system built with SST (Serverless Stack) that allows
 - **React Query**: Server state management
 - **React Router**: Client-side routing
 - **Vite**: Fast build tool and dev server
+
+#### Third-Party Libraries (Frontend)
+
+- `react`, `react-dom`, `react-router-dom`
+- `@tanstack/react-query` (React Query)
+- `axios` (HTTP client)
+- `tailwindcss`, `postcss`, `autoprefixer` (styling)
+- `lucide-react` (icon set)
+- `jwt-decode` (JWT parsing)
+- `date-fns` (date utilities)
+- `@headlessui/react` (UI components, if used)
+- `@testing-library/react`, `jest` (testing)
 
 ## 📊 Database Schema
 
@@ -168,13 +192,13 @@ CREATE TABLE IF NOT EXISTS medication_doses (
 
 ```bash
 # Install root dependencies
-npm install
+pnpm install
 
 # Install function dependencies
-cd packages/functions && npm install && cd ../..
+cd packages/functions && pnpm install && cd ../..
 
 # Install frontend dependencies
-cd packages/frontend && npm install && cd ../..
+cd packages/frontend && pnpm install && cd ../..
 ```
 
 ### 2. Configure AWS
@@ -186,14 +210,14 @@ aws configure
 ### 3. Deploy Backend
 
 ```bash
-npm run deploy
+pnpm run deploy
 ```
 
 ### 4. Start Frontend Development
 
 ```bash
 cd packages/frontend
-npm run dev
+pnpm run dev
 ```
 
 ## 🔧 Development
@@ -202,13 +226,13 @@ npm run dev
 
 ```bash
 # Start SST development environment
-npm run dev
+pnpm run dev
 
 # View logs and manage resources
-npm run console
+pnpm run console
 
 # Deploy changes
-npm run deploy
+pnpm run deploy
 ```
 
 ### Frontend Development
@@ -217,13 +241,23 @@ npm run deploy
 cd packages/frontend
 
 # Start development server
-npm run dev
+pnpm run dev
 
 # Build for production
-npm run build
+pnpm run build
+```
 
+### Testing
+
+```bash
 # Type checking
-npm run typecheck
+pnpm run typecheck
+
+# Run all Jest tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test -- --watch
 ```
 
 ## 💡 Key Features Explained
@@ -268,7 +302,7 @@ I determined actual dosing persistence is only necessary to persist state (as in
 ### Backend Deployment
 
 ```bash
-npm run deploy
+pnpm run deploy
 ```
 
 This creates:
@@ -282,7 +316,7 @@ This creates:
 
 ```bash
 cd packages/frontend
-npm run build
+pnpm run build
 ```
 
 The built files can be deployed to:

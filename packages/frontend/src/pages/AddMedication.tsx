@@ -218,9 +218,9 @@ const AddMedication = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-2 md:p-0">
       <Card className="space-y-2">
-        <CardHeader className="flex justify-between items-center">
+        <CardHeader className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0">
           <CardTitle className="text-base">Add Medication for {recipient.name}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -228,6 +228,7 @@ const AddMedication = () => {
             <div>
               <Label>Name</Label>
               <Input
+                className="w-full"
                 value={medication.name}
                 onChange={(e) => updateMedication({ name: e.target.value })}
               />
@@ -235,6 +236,7 @@ const AddMedication = () => {
             <div>
               <Label>Dosage</Label>
               <Input
+                className="w-full"
                 value={medication.dosage}
                 onChange={(e) => updateMedication({ dosage: e.target.value })}
               />
@@ -242,7 +244,7 @@ const AddMedication = () => {
             <div>
               <Label>Schedule Type</Label>
               <select
-                className="border rounded px-2 py-1 w-full"
+                className="border rounded px-2 py-2 w-full"
                 value={medication.recurrence}
                 onChange={(e) => updateMedication({ recurrence: e.target.value as WEEKDAYS })}
               >
@@ -256,7 +258,11 @@ const AddMedication = () => {
             <Label>Schedule</Label>
             <div className="space-y-3">
             {medication.recurrence === RECURRENCE.DAILY && <DailyScheduleComponent />}
-            {medication.recurrence === RECURRENCE.WEEKLY && <WeeklyScheduleComponent />}
+            {medication.recurrence === RECURRENCE.WEEKLY && (
+              <div className="overflow-x-auto">
+                <WeeklyScheduleComponent />
+              </div>
+            )}
             </div>
           </div>
 
@@ -266,6 +272,7 @@ const AddMedication = () => {
               <Input
                 type="date"
                 icon={<Calendar size={14} />}
+                className="w-full"
                 value={medication.start_at}
                 onChange={(e) => updateMedication({ start_at: e.target.value })}
               />
@@ -275,6 +282,7 @@ const AddMedication = () => {
               <Input
                 type="date"
                 icon={<Calendar size={14} />}
+                className="w-full"
                 value={medication.end_at}
                 onChange={(e) => updateMedication({ end_at: e.target.value })}
               />
@@ -282,7 +290,7 @@ const AddMedication = () => {
           </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={handleSave}>Save</Button>
+          <Button className="w-full md:w-auto" onClick={handleSave}>Save</Button>
         </CardFooter>
       </Card>
     </div>
